@@ -1,29 +1,32 @@
 import React, { useState, useEffect, } from 'react';
 import { Link } from 'react-router-dom';
 import { Eye, EyeOff, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { useSelector } from 'react-redux';
 
-const FormHandler = ({formData,setFormData,errors, setErrors,signup}) => {
+const FormHandler = ({formData,setFormData,errors, setErrors,signup,isFormValid,setIsFormValid,handleSubmit}) => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isFormValid, setIsFormValid] = useState(false);
+  
+  const {isLoading} = useSelector(state=>state.auth);
 
-  // Check if the form is valid
+
   useEffect(() => {
     const allFieldsFilled = Object.values(formData).every(val => val.trim() !== '');
     const noErrors = Object.values(errors).every(error => error === '');
+ 
     setIsFormValid(allFieldsFilled && noErrors);
   }, [formData, errors]);
 
-  // Handle input changes
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
     validateField(name, value);
   };
 
-  // Validate individual field
+
   const validateField = (name, value) => {
     let errorMessage = '';
     
@@ -89,34 +92,8 @@ const FormHandler = ({formData,setFormData,errors, setErrors,signup}) => {
     }));
   };
 
-  // Handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    if (isFormValid) {
-      setIsSubmitting(true);
-      
-      // Simulate API call with timeout
-      setTimeout(() => {
-        console.log('Form submitted successfully', formData);
-        alert('Signup successful!');
-        setIsSubmitting(false);
-        
-        // Reset form after successful submission
-        setFormData(signup?{
-          name: '',
-          email: '',
-          password: '',
-          confirmPassword: ''
-        }:{
-            email:'',
-            password:''
-        });
-      }, 2000);
-    }
-  };
 
-  // Determine field status for styling
+ 
   const getFieldStatus = (field) => {
     if (!formData[field]) return 'default';
     return errors[field] ? 'error' : 'success';
@@ -132,7 +109,9 @@ const FormHandler = ({formData,setFormData,errors, setErrors,signup}) => {
 
       <div className={` ${ signup ? 'mb-4': 'mb-24' } sm:mx-auto sm:w-full sm:max-w-md`}>
         <div className="bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <form className="space-y-6" onSubmit={handleSubmit}>
+          <form className="space-y-6" onSubmit={(e)=>{
+            
+            handleSubmit(e,setIsSubmitting)}}>
 
            {signup&& <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-300">
@@ -150,7 +129,7 @@ const FormHandler = ({formData,setFormData,errors, setErrors,signup}) => {
                     getFieldStatus('name') === 'success' ? 'border-green-300 text-gray-200  focus:border-green-300' :
                     'border-gray-300 text-gray-200 focus:ring-gray-500 focus:border-gray-500'
                   }`}
-                  placeholder="John Doe"
+                  placeholder="Your Name"
                 />
                 {getFieldStatus('name') === 'error' && (
                   <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -181,8 +160,8 @@ const FormHandler = ({formData,setFormData,errors, setErrors,signup}) => {
                   value={formData.email}
                   onChange={handleChange}
                   className={`block w-full pr-10 sm:text-sm rounded-md py-2 px-3 border ${
-                    getFieldStatus('name') === 'error' ? 'border-red-300 text-red-400 placeholder-red-300 focus:ring-red-400 focus:border-red-400' :
-                    getFieldStatus('name') === 'success' ? 'border-green-300 text-gray-200  focus:border-green-300' :
+                    getFieldStatus('email') === 'error' ? 'border-red-300 text-red-400 placeholder-red-300 focus:ring-red-400 focus:border-red-400' :
+                    getFieldStatus('email') === 'success' ? 'border-green-300 text-gray-200  focus:border-green-300' :
                     'border-gray-300 text-gray-200 focus:ring-gray-500 focus:border-gray-500'
                   }`}
                   placeholder="you@example.com"
@@ -216,8 +195,8 @@ const FormHandler = ({formData,setFormData,errors, setErrors,signup}) => {
                   value={formData.password}
                   onChange={handleChange}
                   className={`block w-full pr-10 sm:text-sm rounded-md py-2 px-3 border ${
-                    getFieldStatus('name') === 'error' ? 'border-red-300 text-red-400 placeholder-red-300 focus:ring-red-400 focus:border-red-400' :
-                    getFieldStatus('name') === 'success' ? 'border-green-300 text-gray-200  focus:border-green-300' :
+                    getFieldStatus('password') === 'error' ? 'border-red-300 text-red-400 placeholder-red-300 focus:ring-red-400 focus:border-red-400' :
+                    getFieldStatus('password') === 'success' ? 'border-green-300 text-gray-200  focus:border-green-300' :
                     'border-gray-300 text-gray-200 focus:ring-gray-500 focus:border-gray-500'
                   }`}
                   placeholder="••••••••"
@@ -257,8 +236,8 @@ const FormHandler = ({formData,setFormData,errors, setErrors,signup}) => {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   className={`block w-full pr-10 sm:text-sm rounded-md py-2 px-3 border ${
-                    getFieldStatus('name') === 'error' ? 'border-red-300 text-red-400 placeholder-red-300 focus:ring-red-400 focus:border-red-400' :
-                    getFieldStatus('name') === 'success' ? 'border-green-300 text-gray-200  focus:border-green-300' :
+                    getFieldStatus('confirmPassword') === 'error' ? 'border-red-300 text-red-400 placeholder-red-300 focus:ring-red-400 focus:border-red-400' :
+                    getFieldStatus('confirmPassword') === 'success' ? 'border-green-300 text-gray-200  focus:border-green-300' :
                     'border-gray-300 text-gray-200 focus:ring-gray-500 focus:border-gray-500'
                   }`}
                   placeholder="••••••••"
@@ -287,15 +266,15 @@ const FormHandler = ({formData,setFormData,errors, setErrors,signup}) => {
             <div>
               <button
                 type="submit"
-                disabled={!isFormValid || isSubmitting}
+                disabled={!isFormValid || isSubmitting || isLoading}
                 className={`w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
-                  !isFormValid ? 'bg-gray-400 cursor-not-allowed' : 'bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500'
+                  !isFormValid ? 'bg-slate-900 cursor-not-allowed' : 'bg-slate-500 hover:bg-gray-600 focus:outline-none cursor-pointer focus:ring-2 focus:ring-offset-2 focus:ring-gray-500'
                 } transition-colors duration-200`}
               >
-                {isSubmitting ? (
+                {isLoading ? (
                   <>
                     <Loader2 className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" />
-                    Processing...
+                    {signup?"Creating account...":"Log in..."}
                   </>
                 ) : (
                   signup? 'Sign up':'Log in'
