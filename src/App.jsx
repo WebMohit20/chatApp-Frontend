@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { checkAuth } from './store/features/authSlice'
 
 
-import "./App.css"
+// import "./App.css"
 
 const App = () => {
   const {isAuthenticated,isLoading} = useSelector(state=>state.auth)
@@ -19,10 +19,10 @@ const App = () => {
   
   useEffect(()=>{
     dispatch(checkAuth());
-  })
+  },[])
   return (
     <div>
-      <Navbar/>
+      {/* <Navbar/> */}
       <Routes>
         <Route path="/" element={<Home/>} />
         <Route path="/login" element={<Login/>} />
@@ -35,6 +35,7 @@ const App = () => {
             </ProtectedRoute>
           } 
         />
+        <Route path='/profile' element={<Profile/>}/>
         <Route path='*' element={<NotFound/>} ></Route>
       </Routes>
     </div>

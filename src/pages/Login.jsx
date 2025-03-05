@@ -24,7 +24,7 @@ const Login = () => {
   const [isFormValid, setIsFormValid] = useState(false);
   useEffect(()=>{
     if(isAuthenticated){
-      navigate("/home")
+      navigate("/profile")
     }
   },[isAuthenticated,dispatch,navigate])
 
