@@ -38,6 +38,19 @@ export const checkAuth = createAsyncThunk(
     }
 )
 
+export const updateProfile = createAsyncThunk("auth/updateProfile",
+    async (image,{rejectWithValue})=>{
+        console.log(image)
+        try {
+            const response = await axiosInstance.put("/auth/update-profile",image)
+            console.log("update",response.data);
+            return response.data
+        } catch (error) {
+            console.log(error)
+            return rejectWithValue(error)
+        }
+})
+
 export const logoutUser = createAsyncThunk(
     "auth/logoutUser",
     async (_,{rejectWithValue})=>{

@@ -2,24 +2,40 @@ import React,{useEffect, useState} from 'react'
 import {Camera,User,Mail} from "lucide-react"
 import { useSelector,useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { updateProfile } from '../store/features/authSlice';
+import imageCompression from "browser-image-compression";
 
 
 const Profile = () => {
 
   const auth = useSelector(state=>state.auth)
   console.log(auth?.user?.data)
-  const [img,setImg] = useState(null);
+  
   const navigate = useNavigate()
+  const dispatch = useDispatch();
   useEffect(()=>{
     if(!auth.user){
       navigate("/login");
     }
   },[auth])
-  function handleUpload(e){
+  async function handleUpload(e){
     const file = e.target.files[0];
     if(!file)return ;
-    const imageUrl = URL.createObjectURL(file);
-    setImg(imageUrl)
+
+    const options = {
+      maxSizeMB: 1, // Maximum file size (1MB)
+      maxWidthOrHeight: 800, // Resize to max 800px width/height
+      useWebWorker: true, // Improves performance
+    };
+    try {
+      const compressedFile = await imageCompression(file, options);
+      const compressedBase64 = await imageCompression.getDataUrlFromFile(compressedFile);
+
+        dispatch(updateProfile({ image: compressedBase64 })); // Send compressed image
+    } catch (error) {
+        console.error("Image compression failed:", error);
+      }
+    
     
   }
   return (
@@ -34,7 +50,7 @@ const Profile = () => {
           <div className='flex flex-col items-center gap-4'>
             <div className='relative'>
               <img 
-                src={img ||'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png'}
+                src={ auth?.user?.data?.image ||'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png'}
                 alt="Profile" 
                 className='size-32 rounded-full object-cover border-4  p-[1px]'
               />
