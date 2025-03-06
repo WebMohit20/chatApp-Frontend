@@ -38,7 +38,8 @@ export const checkAuth = createAsyncThunk(
     }
 )
 
-export const updateProfile = createAsyncThunk("auth/updateProfile",
+export const updateProfile = createAsyncThunk(
+    "auth/updateProfile",
     async (image,{rejectWithValue})=>{
         console.log(image)
         try {

@@ -25,9 +25,9 @@ const App = () => {
   },[auth])
   return (
     <div data-theme={theme}>
-      {/* <Navbar/> */}
+      <Navbar/>
       <Routes>
-        <Route path="/setting" element={<Setting/>} />
+        <Route path="/settings" element={<Setting/>} />
         <Route path="/login" element={<Login/>} />
         <Route path="/signup" element={<Signup/>} />
         <Route path='/' element={<Home/>} />
