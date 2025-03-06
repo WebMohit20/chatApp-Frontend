@@ -6,6 +6,7 @@ import Signup from "./pages/Signup"
 import Profile from "./pages/Profile"
 import Navbar from './components/Navbar'
 import NotFound from "./pages/NotFound"
+import Setting from './pages/Setting'
 import ProtectedRoute from './components/ProtectedRoute'
 import { useDispatch, useSelector } from 'react-redux'
 import { checkAuth } from './store/features/authSlice'
@@ -14,24 +15,27 @@ import { checkAuth } from './store/features/authSlice'
 // import "./App.css"
 
 const App = () => {
-  const {isAuthenticated,isLoading} = useSelector(state=>state.auth)
+  const auth = useSelector(state=>state.auth)
+  const theme = useSelector(state=>state.theme.theme)
   const dispatch = useDispatch();
   
   useEffect(()=>{
     dispatch(checkAuth());
-  },[])
+    
+  },[auth])
   return (
-    <div>
+    <div data-theme={theme}>
       {/* <Navbar/> */}
       <Routes>
-        <Route path="/" element={<Home/>} />
+        <Route path="/setting" element={<Setting/>} />
         <Route path="/login" element={<Login/>} />
         <Route path="/signup" element={<Signup/>} />
+        <Route path='/' element={<Home/>} />
         <Route 
           path="/home" 
           element={
             <ProtectedRoute>
-              <Home />
+              <Home/>
             </ProtectedRoute>
           } 
         />
